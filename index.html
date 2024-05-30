@@ -55,6 +55,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     background: #ffffff1a;
+    position: relative;
 }
 [data] > [char] > [info]
 {
@@ -92,6 +93,16 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
+[char] > [frame]
+{
+    position: absolute;
+    bottom: 25px;
+    left: 85vw;
+    color: #ffffff4f;
+    font-family: 'tekken';
+    font-size: 32px;
+    z-index: 0;
+}
 [moves] > [move]
 {
     width: 25vw;
@@ -99,6 +110,7 @@
     line-height: 2vh;
     color: white;
     margin: 20px;
+    z-index: 1;
 }
 [moves] > [move]
 {
@@ -319,7 +331,7 @@ function createMove(moveData)
 
     let link = maek('a')
     tag(link, 'link')
-    link.setAttribute('href', 'https://wavu.wiki/t/' + moveData.character.charAt(0).toUpperCase() + moveData.character.slice(1).replaceAll('-', '_') + '_movelist#' + moveData.wavuId)
+    link.setAttribute('href', 'https://wavu.wiki/t/' + moveData.character.charAt(0).toUpperCase() + moveData.character.slice(1).replaceAll('l-j', 'l_J') + '_movelist#' + moveData.wavuId.replaceAll('l J', 'l_J'))
     link.setAttribute('target', '_blank')
     move.append(link)
 
@@ -358,7 +370,7 @@ function createMove(moveData)
     return move
 }
 
-function createCharacter(char, frameData)
+function createCharacter(char, frameData, frame)
 {
     let character = maek()
     character.setAttribute('char', '')
@@ -370,7 +382,7 @@ function createCharacter(char, frameData)
     tag(portrait, char)
 
 
-    let name = maek('div')
+    let name = maek()
     tag(name, 'name')
     name.textContent = char
 
@@ -381,12 +393,16 @@ function createCharacter(char, frameData)
     for (let index in frameData)
         moves.append(createMove(frameData[index]))
 
+    let frameNumber = maek()
+    tag(frameNumber, 'frame')
+    frameNumber.textContent = frame
 
     info.append(name)
     info.append(portrait)
 
     character.append(info)
     character.append(moves)
+    character.append(frameNumber)
 
     return character
 }
@@ -421,7 +437,7 @@ function createFrame(frame, frameData)
     frameElement.append(frameBar)
 
     for (let char in frameData)
-        frameDataElement.append(createCharacter(char, frameData[char]))
+        frameDataElement.append(createCharacter(char, frameData[char], frame))
 
     frameElement.append(frameDataElement)
 
