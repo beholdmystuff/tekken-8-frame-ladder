@@ -76,7 +76,6 @@ body
     width: 72px;
     height: 88px;
     background-image: url(portraits.webp);
-    z-index: 0;
 }
 [data] > [char] > [info] > [name]
 {
@@ -106,7 +105,6 @@ body
     color: #ffffff4f;
     font-family: 'tekken';
     font-size: 32px;
-    z-index: 0;
 }
 [moves] > [move]
 {
@@ -115,7 +113,6 @@ body
     line-height: 2vh;
     color: white;
     margin: 20px;
-    z-index: 1;
 }
 [moves] > [move]
 {
@@ -221,6 +218,38 @@ body
     opacity: 0.75;
 }
 
+[menu]
+{
+    right: 0;
+    top: 0;
+    position: fixed;
+    width: 64px;
+    background: black;
+    column-count: 2;
+    padding: 8px;
+}
+[swoopitypoop]
+{
+    display: block;
+    font-size: 22px;
+    color: #ffffff77;
+    transition: color 0.3s ease-out;
+    cursor: pointer;
+}
+[swoopitypoop]:hover
+{
+    color: white;
+}
+[gon]
+{
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    background: url(gon.webp);
+}
 </style>
 
 <body>
@@ -237,9 +266,22 @@ function maek(type)
     return document.createElement(type ? type : 'div')
 }
 
+function gib(wat, wer)
+{
+    return (wer ? wer : document).querySelector(wat)
+}
+
 function tag(element, tag)
 {
     element.setAttribute(tag, '')
+}
+
+function snip(element, tag)
+{
+    console.log(element);
+    if (typeof element == 'string')
+        element = gib(element)
+    element.removeAttribute(tag, '')
 }
 
 let moves = {}
@@ -416,6 +458,7 @@ function createFrame(frame, frameData)
 {
     let frameElement = maek()
     frameElement.setAttribute('frame', '')
+    frameElement.setAttribute('id', frame)
 
     let frameBar = maek()
     frameBar.setAttribute('bar', '')
@@ -456,12 +499,6 @@ function createGraph()
     {
         createFrame(frame, grouped[frame])
     }
-    //frame
-        //character
-            //move
-                //height
-                //name
-                //notation
 }
 
 function dewEet()
@@ -469,8 +506,46 @@ function dewEet()
     processCharacters(rawFrameData)
     processFrames(moves)
     createGraph()
-
+    createMenu()
 }
+
+function createMenu()
+{
+    let menu = maek()
+    tag(menu, 'menu')
+    tag(menu, 'hidden')
+
+    let gon = maek()
+    tag(gon, 'gon')
+    gon.addEventListener('click', (event) =>
+    {
+        tag(gon, 'hidden')
+        snip(menu, 'hidden')
+    })
+
+    Object.keys(grouped).forEach(key =>
+    {
+        let frameLink = maek()
+        tag(frameLink, 'swoopitypoop')
+        frameLink.href = '#' + key
+        frameLink.textContent = key
+        frameLink.addEventListener('click', (event) =>
+            {
+                snip(gon, 'hidden')
+                tag(menu, 'hidden')
+                window.location = event.target.href
+            })
+        snip(gon)
+
+        menu.append(frameLink)
+    })
+
+
+
+    document.body.append(gon)
+    document.body.append(menu)
+}
+
 
 dewEet()
 
